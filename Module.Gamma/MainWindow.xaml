@@ -7,21 +7,33 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         d:DataContext="{d:DesignInstance local:ViewModel}">
-        
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Margin="15">
-            <TextBox Text="{Binding Model.FirstLine, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
-            <TextBox Text="{Binding Model.SecondLine, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
-            <TextBox Text="{Binding Model.ResultLine, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
+            <TextBox Text="{Binding Model.FirstLine, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
+            <TextBlock Text="{Binding Model.SizeOfFirst, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
+            <TextBox Text="{Binding Model.SecondLine, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
+            <TextBlock Text="{Binding Model.SizeOfSecond, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
+            <TextBox Text="{Binding Model.ResultLine, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="15">
             <Button Command="{Binding GenerateKeyCommand}" Content="Создать ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
             <TextBlock Text="Создавать на ходу"/>
-            <CheckBox IsChecked="{Binding Model.IsKeyGenerating}"/>            
+            <CheckBox IsChecked="{Binding Model.IsKeyGenerating}" Margin="0,0,0,20"/>
+            <Button Command="{Binding PackToGroupCommand}" Content="В группе" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+            <Button Command="{Binding UnpackFromGroupCommand}" Content="В ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
         </StackPanel>
+        <StackPanel Grid.Row="1">
+            <TextBox Text="{Binding Model.Groups, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
+        </StackPanel>
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Model.DebugLine}" Width="100"/>
     </Grid>
 </Window>
