@@ -18,11 +18,10 @@
             <TextBox Text="{Binding Model.SecondLine, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
             <TextBox Text="{Binding Model.ResultLine, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
         </StackPanel>
-        <StackPanel Grid.Column="1">
-            <Button Command="{Binding GenerateKeyCommand}" Content="Создать ключ"/>
+        <StackPanel Grid.Column="1" Margin="15">
+            <Button Command="{Binding GenerateKeyCommand}" Content="Создать ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
             <TextBlock Text="Создавать на ходу"/>
-            <CheckBox IsChecked="{Binding Model.IsKeyGenerating}"/>
-            
+            <CheckBox IsChecked="{Binding Model.IsKeyGenerating}"/>            
         </StackPanel>
     </Grid>
 </Window>

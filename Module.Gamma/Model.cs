@@ -18,7 +18,38 @@ namespace Module.Gamma
         private byte[] secondLineBytes;
         private byte[] resultLineBytes;
 
-        public string FirstLine { get => firstLine; set => SetLine(ref firstLine, x => x.FirstLineBytes, value); }
+        public string FirstLine
+        {
+            get => firstLine; set
+            {
+                SetLine(ref firstLine, x => x.FirstLineBytes, value);
+                if (IsKeyGenerating)
+                    KeepKey();
+            }
+        }
+
+        private void KeepKey()
+        {
+            while (true)
+            {
+                var fBytes = Encoding.GetBytes(FirstLine);
+                var sBytes = Encoding.GetBytes(SecondLine);
+                var diff = fBytes.Length - sBytes.Length;
+                if (fBytes.Length > sBytes.Length)
+                {
+                    var newBytes = new byte[diff];
+                    Random.NextBytes(newBytes);
+                    SecondLine += Encoding.GetString(newBytes);
+                }
+                else
+                {
+                    sBytes = sBytes.Take(sBytes.Length + diff).ToArray();
+                    SecondLine = Encoding.GetString(sBytes);
+                    break;
+                }
+            }
+        }
+
         public string SecondLine { get => secondLine; set => SetLine(ref secondLine, x => x.SecondLineBytes, value); }
         public string ResultLine { get => resultLine; set => SetField(ref resultLine, value); }
         public byte[] FirstLineBytes { get => firstLineBytes; set => SetTopBytes(ref firstLineBytes, value); }
@@ -26,6 +57,7 @@ namespace Module.Gamma
         public byte[] ResultLineBytes { get => resultLineBytes; set => SetResultBytes(ref resultLineBytes, value); }
         public bool IsKeyGenerating { get; set; }
         public Encoding Encoding { get; set; } = Encoding.Unicode;
+        public Random Random { get; set; } = new Random();
 
         bool SetTopBytes(ref byte[] field, byte[] value, [CallerMemberName] string propertyName = null)
         {

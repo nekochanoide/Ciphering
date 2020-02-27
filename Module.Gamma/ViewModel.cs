@@ -11,10 +11,8 @@ namespace Module.Gamma
     {
         public ViewModel()
         {
-            _random = SetRandom();
             Model = new Model();
         }
-        Random _random;
         public Model Model { get; set; }
 
         private ICommand _generateKeyCommand;
@@ -24,12 +22,12 @@ namespace Module.Gamma
         void GenerateKey()
         {
             var bytes = Encoding.Unicode.GetBytes(Model.FirstLine);
-            _random.NextBytes(bytes);
+            Model.Random.NextBytes(bytes);
             //for (int i = 0; i < bytes.Length; i++)
             //    bytes[i] >>= 1;
             Model.SecondLine = Model.Encoding.GetString(bytes);
         }
 
-        private Random SetRandom() => _random = new Random();
+        private Random SetRandom(int seed) => Model.Random = new Random(seed);
     }
 }
