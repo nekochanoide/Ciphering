@@ -17,32 +17,33 @@ namespace Module.Gamma
         private byte[] firstLineBytes;
         private byte[] secondLineBytes;
         private byte[] resultLineBytes;
+        private string firstBytesInterpretation;
+        private string secondBytesInterpretation;
+        private string resultBytesInterpretation;
         private string debugLine;
         private string groups;
 
         public Model()
         {
-            Encoding = Encoding.ASCII;
-            //Encoding = Encoding.Unicode;
-            //Encoding = Encoding.UTF8;
-            Random = new Random();
+            //Encoding = Encoding.ASCII;
+            Encoding = Encoding.Unicode;
+            Random = new Random(19971103);
             IsKeyGenerating = true;
+            FirstLine = "Hello, World!";
         }
 
         public string FirstLine
         {
             get => firstLine; set
             {
-                SetLine(ref firstLine, x => x.FirstLineBytes, value);
-                if (IsKeyGenerating)
-                    KeepKey();
+                SetTopLine(ref firstLine, value);
+                //if (IsKeyGenerating)
+                //    KeepKey();
             }
         }
 
         private void KeepKey()
         {
-            //while (true)
-            //{
             var fBytes = Encoding.GetBytes(FirstLine);
             var sBytes = Encoding.GetBytes(SecondLine ?? "");
             var diff = fBytes.Length - sBytes.Length;
@@ -59,12 +60,11 @@ namespace Module.Gamma
             {
                 sBytes = sBytes.Take(sBytes.Length + diff).ToArray();
                 SecondLine = Encoding.GetString(sBytes);
-                //break;
             }
-            //}
         }
 
-        public string SecondLine { get => secondLine; set => SetLine(ref secondLine, x => x.SecondLineBytes, value); }
+        public string SecondLine { get => secondLine;
+            set => SetTopLine(ref secondLine, value); }
         public string ResultLine { get => resultLine; set => SetField(ref resultLine, value); }
         public byte[] FirstLineBytes { get => firstLineBytes; set => SetTopBytes(ref firstLineBytes, value); }
         public byte[] SecondLineBytes { get => secondLineBytes; set => SetTopBytes(ref secondLineBytes, value); }
@@ -76,25 +76,77 @@ namespace Module.Gamma
         public Encoding Encoding { get; set; }
         public Random Random { get; set; }
         public string DebugLine { get => debugLine; set => SetField(ref debugLine, value); }
-        public string Groups { get => groups; set => SetField(ref groups, value); }
+        //public string Groups { get => groups; set => SetField(ref groups, value); }
+        public string FirstBytesInterpretation
+        {
+            get => firstBytesInterpretation; set // how to set:
+                                                 // check if string length is even,
+                                                 // then validate if it fit to be a bytes,
+                                                 // then get bytes from string,
+                                                 // then set bytes property
+            {
+                if (value.Length % 2 != 0)
+                    return;
+                var bytes = new List<byte>();
+                for (int i = 0; i < value.Length; i += 2)
+                {
+                    if (TryConvert.TryToByte(value.Substring(i, 2), out byte @byte))
+                        bytes.Add(@byte);
+                    else
+                        return;
+                }
+                FirstLineBytes = bytes.ToArray();
+                NotifyPropertyChanged();
+            }
+        }
+        public string SecondBytesInterpretation
+        {
+            get => secondBytesInterpretation; set
+            {
+                if (value.Length % 2 != 0)
+                    return;
+                var bytes = new List<byte>();
+                for (int i = 0; i < value.Length; i += 2)
+                {
+                    if (TryConvert.TryToByte(value.Substring(i, 2), out byte @byte))
+                        bytes.Add(@byte);
+                    else
+                        return;
+                }
+                SecondLineBytes = bytes.ToArray();
+                NotifyPropertyChanged();
+            }
+        }
+        public string ResultBytesInterpretation
+        {
+            get => resultBytesInterpretation; set
+            {
+                resultBytesInterpretation = value;
+            }
+        }
 
         bool SetTopBytes(ref byte[] field, byte[] value, [CallerMemberName] string propertyName = null)
         {
-            if (EqualityComparer<byte[]>.Default.Equals(field, value))
+            if (field?.SequenceEqual(value) == true)                
                 return false;
             field = value;
 
             if (propertyName == nameof(FirstLineBytes))
             {
+                FirstLine = Encoding.GetString(value);
+                FirstBytesInterpretation = value.ToStr();
                 if (value.Length == SecondLineBytes?.Length)
                     ResultLineBytes = DoXor(value, SecondLineBytes).ToArray();
             }
-            else if (value.Length == FirstLineBytes?.Length)
-                ResultLineBytes = DoXor(value, FirstLineBytes).ToArray();
+            else
+            {
+                SecondLine = Encoding.GetString(value);
+                SecondBytesInterpretation = value.ToStr();
+                if (value.Length == FirstLineBytes?.Length)
+                    ResultLineBytes = DoXor(value, FirstLineBytes).ToArray();
+            }
 
             NotifyPropertyChanged(propertyName);
-            NotifyPropertyChanged(nameof(SizeOfFirst));
-            NotifyPropertyChanged(nameof(SizeOfSecond));
             return true;
         }
 
@@ -111,16 +163,13 @@ namespace Module.Gamma
                 yield return (byte)(a[i] ^ b[i]);
         }
 
-        protected bool SetLine<T>(ref T field, Expression<Func<Model, byte[]>> expression, T value, [CallerMemberName] string propertyName = null)
+        protected bool SetTopLine(ref string field, string value, [CallerMemberName] string propertyName = null)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value))
+            if (value == field)
                 return false;
             field = value;
 
-            //var expr = (MemberExpression)expression.Body;
-            //var prop = (PropertyInfo)expr.Member;
-            var input = Encoding.GetBytes(value.ToString());
-            //prop.SetValue(this, input, null);
+            var input = Encoding.GetBytes(value);
             if (propertyName == nameof(FirstLine))
                 FirstLineBytes = input;
             else

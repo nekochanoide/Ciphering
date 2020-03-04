@@ -10,23 +10,27 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="6*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Margin="15">
-            <TextBox Text="{Binding Model.FirstLine, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
+        <StackPanel Margin="15">
+            <TextBox Text="{Binding Model.FirstLine, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBox Text="{Binding Model.FirstBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
             <TextBlock Text="{Binding Model.SizeOfFirst, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
-            <TextBox Text="{Binding Model.SecondLine, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
+            <TextBox Text="{Binding Model.SecondLine, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBox Text="{Binding Model.SecondBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
             <TextBlock Text="{Binding Model.SizeOfSecond, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
-            <TextBox Text="{Binding Model.ResultLine, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
+            <TextBox Text="{Binding Model.ResultLine, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBox Text="{Binding Model.ResultBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBlock Text="{Binding Model.SizeOfResult, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="15">
             <Button Command="{Binding GenerateKeyCommand}" Content="Создать ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
-            <TextBlock Text="Создавать на ходу"/>
+            <TextBlock>"На ходу"</TextBlock>
             <CheckBox IsChecked="{Binding Model.IsKeyGenerating}" Margin="0,0,0,20"/>
             <Button Command="{Binding PackToGroupCommand}" Content="В группе" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
             <Button Command="{Binding UnpackFromGroupCommand}" Content="В ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>

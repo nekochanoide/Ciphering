@@ -23,35 +23,35 @@ namespace Module.Gamma
         {
             var bytes = Model.Encoding.GetBytes(Model.FirstLine);
             Model.Random.NextBytes(bytes);
-            if (Model.Encoding.EncodingName == "US-ASCII")
-                for (int i = 0; i < bytes.Length; i++)
-                    bytes[i] >>= 1;
+            //if (Model.Encoding.EncodingName == "US-ASCII")
+            for (int i = 0; i < bytes.Length; i++)
+                bytes[i] >>= 1;
             Model.SecondLine = Model.Encoding.GetString(bytes);
         }
 
-        public ICommand _packToGroupCommand;
-        public ICommand PackToGroupCommand
-            => _packToGroupCommand ?? (_packToGroupCommand = new Command(GenerateGroup, 
-                () => !string.IsNullOrWhiteSpace(Model.SecondLine)));
+        //public ICommand _packToGroupCommand;
+        //public ICommand PackToGroupCommand
+        //    => _packToGroupCommand ?? (_packToGroupCommand = new Command(GenerateGroup, 
+        //        () => !string.IsNullOrWhiteSpace(Model.SecondLine)));
 
-        public ICommand _unpackFromGroupCommand;
-        public ICommand UnpackFromGroupCommand
-            => _unpackFromGroupCommand ?? (_unpackFromGroupCommand = new Command(RegenerateKey, 
-                () => !string.IsNullOrWhiteSpace(Model.Groups)));
+        //public ICommand _unpackFromGroupCommand;
+        //public ICommand UnpackFromGroupCommand
+        //    => _unpackFromGroupCommand ?? (_unpackFromGroupCommand = new Command(RegenerateKey, 
+        //        () => !string.IsNullOrWhiteSpace(Model.Groups)));
 
-        private void GenerateGroup()
-        {
-            var bytes = Model.Encoding.GetBytes(Model.SecondLine);
-            bytes = PackToGroup(bytes);
-            Model.Groups = Model.Encoding.GetString(bytes);
-        }
+        //private void GenerateGroup()
+        //{
+        //    var bytes = Model.Encoding.GetBytes(Model.SecondLine);
+        //    bytes = PackToGroup(bytes);
+        //    Model.Groups = Model.Encoding.GetString(bytes);
+        //}
 
-        private void RegenerateKey()
-        {
-            var bytes = Model.Encoding.GetBytes(Model.Groups);
-            bytes = UnpackFromGroup(bytes);
-            Model.SecondLine = Model.Encoding.GetString(bytes);
-        }
+        //private void RegenerateKey()
+        //{
+        //    var bytes = Model.Encoding.GetBytes(Model.Groups);
+        //    bytes = UnpackFromGroup(bytes);
+        //    Model.SecondLine = Model.Encoding.GetString(bytes);
+        //}
 
         static byte[] PackToGroup(byte[] bytes)
         {
