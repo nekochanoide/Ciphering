@@ -24,7 +24,7 @@ namespace Module.Gamma
         {
             result = default;
             try {
-                Convert.ToByte(value);
+                result = Convert.ToByte(value);
             }
             catch {
                 return false;

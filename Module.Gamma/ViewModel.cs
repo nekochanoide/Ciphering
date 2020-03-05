@@ -13,6 +13,7 @@ namespace Module.Gamma
         {
             Model = new Model();
         }
+
         public Model Model { get; set; }
 
         private ICommand _generateKeyCommand;
@@ -23,10 +24,66 @@ namespace Module.Gamma
         {
             var bytes = Model.Encoding.GetBytes(Model.FirstLine);
             Model.Random.NextBytes(bytes);
-            //if (Model.Encoding.EncodingName == "US-ASCII")
-            for (int i = 0; i < bytes.Length; i++)
-                bytes[i] >>= 1;
+            if (Model.Encoding.EncodingName == "US-ASCII")
+                for (int i = 0; i < bytes.Length; i++)
+                    bytes[i] >>= 1;
             Model.SecondLine = Model.Encoding.GetString(bytes);
+        }
+
+        private ICommand _byteViewCommand;
+        public ICommand ByteViewCommand
+            => _byteViewCommand ?? (_byteViewCommand = new Command(ToByteView, () => true));
+
+        private void ToByteView()
+        {
+            var fBytes = Model.Encoding.GetBytes(Model.FirstLine);
+            Model.FirstBytesInterpretation = fBytes.ToStr();
+
+            var sBytes = Model.Encoding.GetBytes(Model.SecondLine);
+            Model.SecondBytesInterpretation = sBytes.ToStr();
+
+            var rBytes = Model.Encoding.GetBytes(Model.ResultLine);
+            Model.ResultBytesInterpretation = rBytes.ToStr();
+        }
+
+        private ICommand _stringViewCommand;
+        public ICommand StringViewCommand
+            => _stringViewCommand ?? (_stringViewCommand = new Command(ToStringView, () => true));
+
+        private void ToStringView()
+        {
+            var fBytes = Model.FirstBytesInterpretation.ReadBytes();
+            Model.FirstLine = Model.Encoding.GetString(fBytes);
+
+            var sBytes = Model.SecondBytesInterpretation.ReadBytes();
+            Model.SecondLine = Model.Encoding.GetString(sBytes);
+
+            var rBytes = Model.ResultBytesInterpretation.ReadBytes();
+            Model.ResultLine = Model.Encoding.GetString(rBytes);
+        }
+
+        private ICommand _decipherCommand;
+        public ICommand DecipherCommand
+            => _decipherCommand ?? (_decipherCommand = new Command(Decipher, () => true));
+
+        private void Decipher()
+        {
+            var fBytes = Model.FirstBytesInterpretation.ReadBytes();
+            var sBytes = Model.SecondBytesInterpretation.ReadBytes();
+            if (fBytes.Length != sBytes.Length)
+            {
+                Model.DebugLine = "different length!";
+                return;
+            }
+            var rBytes = DoXor(fBytes, sBytes).ToArray();
+            Model.ResultLine = Model.Encoding.GetString(rBytes);
+            Model.ResultBytesInterpretation = rBytes.ToStr();
+        }
+
+        private IEnumerable<byte> DoXor(byte[] a, byte[] b)
+        {
+            for (int i = 0; i < a.Length; i++)
+                yield return (byte)(a[i] ^ b[i]);
         }
 
         //public ICommand _packToGroupCommand;
@@ -75,7 +132,5 @@ namespace Module.Gamma
             }
             return bytes;
         }
-
-        private Random SetRandom(int seed) => Model.Random = new Random(seed);
     }
 }

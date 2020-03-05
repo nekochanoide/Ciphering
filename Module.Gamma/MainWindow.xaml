@@ -19,21 +19,20 @@
         </Grid.RowDefinitions>
         <StackPanel Margin="15">
             <TextBox Text="{Binding Model.FirstLine, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
-            <TextBox Text="{Binding Model.FirstBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBox Text="{Binding Model.FirstBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}" FontFamily="Consolas" FontWeight="Bold" />
             <TextBlock Text="{Binding Model.SizeOfFirst, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
             <TextBox Text="{Binding Model.SecondLine, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
-            <TextBox Text="{Binding Model.SecondBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBox Text="{Binding Model.SecondBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}" FontFamily="Consolas" FontWeight="Bold"/>
             <TextBlock Text="{Binding Model.SizeOfSecond, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
             <TextBox Text="{Binding Model.ResultLine, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
-            <TextBox Text="{Binding Model.ResultBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}"/>
+            <TextBox Text="{Binding Model.ResultBytesInterpretation, UpdateSourceTrigger=PropertyChanged, Delay=100}" FontFamily="Consolas" FontWeight="Bold"/>
             <TextBlock Text="{Binding Model.SizeOfResult, StringFormat={}байт: {0}}" Margin="0,0,0,10"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Margin="15">
             <Button Command="{Binding GenerateKeyCommand}" Content="Создать ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
-            <TextBlock>"На ходу"</TextBlock>
-            <CheckBox IsChecked="{Binding Model.IsKeyGenerating}" Margin="0,0,0,20"/>
-            <Button Command="{Binding PackToGroupCommand}" Content="В группе" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
-            <Button Command="{Binding UnpackFromGroupCommand}" Content="В ключ" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+            <Button Command="{Binding ByteViewCommand}" Content="В битах" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+            <Button Command="{Binding StringViewCommand}" Content="В строке" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
+            <Button Command="{Binding DecipherCommand}" Content="xor" Width="auto" HorizontalAlignment="Left" Margin="0,0,0,10"/>
         </StackPanel>
         <StackPanel Grid.Row="1">
             <TextBox Text="{Binding Model.Groups, UpdateSourceTrigger=PropertyChanged, Delay=200}"/>
