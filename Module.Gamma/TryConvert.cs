@@ -8,8 +8,7 @@ namespace Module.Gamma
 {
     static class TryConvert
     {
-        public static bool TryToByte(string value, int fromBase, out byte result)
-        {
+        public static bool TryToByte(string value, int fromBase, out byte result) {
             result = default;
             try {
                 result = Convert.ToByte(value, fromBase);
@@ -20,8 +19,7 @@ namespace Module.Gamma
             return true;
         }
 
-        public static bool TryToByte(string value, out byte result)
-        {
+        public static bool TryToByte(string value, out byte result) {
             result = default;
             try {
                 result = Convert.ToByte(value);
